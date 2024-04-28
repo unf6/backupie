@@ -20,10 +20,6 @@ Backupie is a powerful [Node.js](https://nodejs.org) module that allows you to e
 npm install --save backupie
 ```
 
-## Examples
-
-You can read this example bot on GitHub: [givify-bot](https://github.com/unf6/givify-bot)
-
 # Documentation
 **https://backupie.js.org**
 
