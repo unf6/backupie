@@ -1,0 +1,44 @@
+{
+  "name": "backupie",
+  "version": "1.0.0",
+  "description": "A complete framework to facilitate server backup using discord.js v14",
+  "main": "lib/index.js",
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unf6/backupie.git"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "backup",
+    "clone",
+    "bot",
+    "discord-backup"
+  ],
+  "author": "ifml",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/unf6/backupie/issues"
+  },
+  "homepage": "https://github.com/unf6/backupie/blob/master/README.md",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "discord.js": "^14.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "prettier": "^2.0.4",
+    "tslint": "^6.1.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.9.4"
+  }
+}
