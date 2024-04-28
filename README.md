@@ -21,7 +21,7 @@ npm install --save backupie
 ```
 
 # Documentation
-**https://backupie.js.org**
+**https://backupie.xap3y.eu** **https://backupie.xap3y.fun** **https://backupie.vercel.app**
 
 # Credits
 
