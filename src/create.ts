@@ -158,3 +158,47 @@ export async function getChannels(guild: Guild, options: CreateOptions) {
         resolve(channels); // Returns the list of the channels
     });
 }
+
+/* returns an array with the guilds automoderation rules */
+export async function getAutoModerationRules(guild) {
+    const rules = await guild.autoModerationRules.fetch({ cache: false });
+    const collectedRules = [];
+
+    rules.forEach((rule) => {
+        const actions = [];
+
+        rule.actions.forEach((action) => {
+            const copyAction = JSON.parse(JSON.stringify(action));
+
+            if (copyAction.metadata.channelId) {
+                const channel = guild.channels.cache.get(copyAction.metadata.channelId);
+
+                if (channel) {
+                    copyAction.metadata.channelName = channel.name;
+                    actions.push(copyAction);
+                }
+
+            } else {
+                actions.push(copyAction);
+            }
+        });
+
+        /* filter out deleted roles and channels due to a potential bug with discord.js */
+        const exemptRoles = rule.exemptRoles.filter((role) => role != undefined);
+        const exemptChannels = rule.exemptChannels.filter((channel) => channel != undefined);
+
+        collectedRules.push({
+            name: rule.name,
+            eventType: rule.eventType,
+            triggerType: rule.triggerType,
+            triggerMetadata: rule.triggerMetadata,
+            actions: actions,
+            enabled: rule.enabled,
+            exemptRoles: exemptRoles.map((role) => ({ id: role.id, name: role.name })),
+            exemptChannels: exemptChannels.map((channel) => ({ id: channel.id, name: channel.name }))
+        });
+    });
+
+    return collectedRules;
+
+}
