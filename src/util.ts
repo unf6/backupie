@@ -337,7 +337,7 @@ export async function clearGuild(guild: Guild) {
         guild.members.unban(ban.user).catch(() => {});
     });
 
-    const rules = guild.autoModerationRules.fetch();
+    const rules = await guild.autoModerationRules.fetch();
     rules.forEach((rule) => {
       rule.delete().catch(() => {});
     });
