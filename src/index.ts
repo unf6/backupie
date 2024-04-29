@@ -90,7 +90,6 @@ export const create = async (
                     enabled: guild.widgetEnabled,
                     channel: guild.widgetChannel ? guild.widgetChannel.name : null
                 },
-                autoModerationRules: [],
                 channels: { categories: [], others: [] },
                 roles: [],
                 bans: [],
@@ -116,9 +115,7 @@ export const create = async (
                 }
                 backupData.splashURL = guild.splashURL();
             }
-
-            backupData.autoModerationRules = await createMaster.getAutoModerationRules(guild);
-                
+        
             if (guild.bannerURL()) {
                 if (options && options.saveImages && options.saveImages === 'base64') {
                     backupData.bannerBase64 = (await axios.get(guild.bannerURL()).then((res) => res.data.buffer())).toString(
