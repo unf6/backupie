@@ -1,4 +1,4 @@
-import type { BackupData, LoadOptions, AutoModRuleData, ExemptChannelData, ExemptRoleData } from './types';
+import type { BackupData, LoadOptions } from './types';
 import type { NewsChannel, TextChannel, ForumChannel, VoiceBasedChannel } from 'discord.js';
 import { ChannelType, Emoji, Guild, GuildFeature, Role, VoiceChannel } from 'discord.js';
 import { loadCategory, loadChannel } from './util';
@@ -155,46 +155,3 @@ export const loadEmbedChannel = (guild: Guild, backupData: BackupData): Promise<
     }
     return Promise.all(embedChannelPromises);
 };
-
-/* restore the automod rules */
-export async function loadAutoModRules(guild: Guild, backupData: BackupData, channels: ExemptChannelData[], roles: ExemptRoleData[]) {
-    if (backupData.autoModerationRules.length === 0) return;
-
-    for (const autoModRule of backupData.autoModerationRules) {
-        let actions = [];
-        for (const action of autoModRule.actions) {
-            let copyAction = JSON.parse(JSON.stringify(action));
-            if (action.metadata.channelName) {
-                const filteredFirstChannel = channels.find(channel => channel.name === action.metadata.channelName && channels.some(channel => channel.id === action.metadata.channelId));
-                if (filteredFirstChannel) {
-                    copyAction.metadata.channel = filteredFirstChannel.id;
-                    copyAction.metadata.channelName = null;
-                    actions.push(copyAction);
-                }
-            } else {
-                copyAction.metadata.channel = null;
-                copyAction.metadata.channelName = null;
-                actions.push(copyAction);
-            }
-        }
-
-        const data: AutoModRuleData = {
-            name: autoModRule.name,
-            eventType: autoModRule.eventType,
-            triggerType: autoModRule.triggerType,
-            triggerMetadata: autoModRule.triggerMetadata,
-            actions: actions,
-            enabled: autoModRule.enabled,
-            exemptRoles: autoModRule.exemptRoles?.map((exemptRole) => {
-                const filteredFirstRole = roles.find(role => role.name === exemptRole.name && roles.some(role => role.id === exemptRole.id));
-                if (filteredFirstRole) return filteredFirstRole.id;
-            }),
-            exemptChannels: autoModRule.exemptChannels?.map((exemptChannel) => {
-                const filteredFirstChannel = channels.find(channel => channel.name === exemptChannel.name && backupData.channelMap[exemptChannel.id] === channel);
-                if (filteredFirstChannel) return filteredFirstChannel.id;
-            }),
-        };
-
-        await guild.autoModerationRules.create(data);
-    }
-}
