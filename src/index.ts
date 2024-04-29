@@ -117,7 +117,7 @@ export const create = async (
                 backupData.splashURL = guild.splashURL();
             }
 
-            backup.autoModerationRules = await createMaster.getAutoModerationRules(guild);
+            backupData.autoModerationRules = await createMaster.getAutoModerationRules(guild);
                 
             if (guild.bannerURL()) {
                 if (options && options.saveImages && options.saveImages === 'base64') {
