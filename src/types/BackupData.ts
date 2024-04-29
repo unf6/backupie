@@ -1,7 +1,6 @@
 import { GuildDefaultMessageNotifications, GuildExplicitContentFilter, Snowflake, GuildVerificationLevel } from 'discord.js';
 import { AfkData, BanData, ChannelsData, EmojiData, RoleData, WidgetData } from './';
 import { MemberData } from './MemberData';
-import { AutoModRuleData } from './AutomodData';
 
 export interface BackupData {
     name: string;
@@ -16,7 +15,6 @@ export interface BackupData {
     splashBase64?: string;
     bannerURL?: string;
     bannerBase64?: string;
-    autoModerationRules: AutoModRuleData[];
     channels: ChannelsData;
     roles: RoleData[];
     bans: BanData[];
