@@ -157,7 +157,7 @@ export const loadEmbedChannel = (guild: Guild, backupData: BackupData): Promise<
 };
 
 /* restore the automod rules */
-export async function loadAutoModRules(guild, backupData: backupData) {
+export async function loadAutoModRules(guild: Guild, backupData: backupData) {
     if (backupData.autoModerationRules.length === 0) return;
 
     const roles = await guild.roles.fetch();
