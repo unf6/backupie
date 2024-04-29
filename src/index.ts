@@ -90,6 +90,7 @@ export const create = async (
                     enabled: guild.widgetEnabled,
                     channel: guild.widgetChannel ? guild.widgetChannel.name : null
                 },
+                autoModerationRules: [],
                 channels: { categories: [], others: [] },
                 roles: [],
                 bans: [],
