@@ -1,4 +1,4 @@
-import { Snowflake, AutoModerationActionType, AutoModerationActionMetadataData, AutoModerationRuleTriggerType, AutoModerationRuleEventType, AutoModerationTriggerMetadata } from 'discord.js';
+import { Snowflake, AutoModerationActionType, AutoModerationRuleTriggerType, AutoModerationRuleEventType, AutoModerationTriggerMetadata } from 'discord.js';
 
 export interface ExemptRoleData {
     id: string;
