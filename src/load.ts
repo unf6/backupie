@@ -155,3 +155,49 @@ export const loadEmbedChannel = (guild: Guild, backupData: BackupData): Promise<
     }
     return Promise.all(embedChannelPromises);
 };
+
+/* restore the automod rules */
+export async function loadAutoModRules(guild, backupData: backupData) {
+    if (backupData.autoModerationRules.length === 0) return;
+
+    const roles = await guild.roles.fetch();
+    const channels = await guild.channels.fetch();
+
+    for (const autoModRule of backupData.autoModerationRules) {
+        let actions = [];
+        for (const action of autoModRule.actions) {
+            let copyAction = JSON.parse(JSON.stringify(action));
+            if (action.metadata.channelName) {
+                const filteredFirstChannel = channels.filter(channel => channel.name === action.metadata.channelName && backupData.channelMap[action.metadata.channelId] === channel).first();
+                if (filteredFirstChannel) {
+                    copyAction.metadata.channel = filteredFirstChannel.id;
+                    copyAction.metadata.channelName = null;
+                    actions.push(copyAction);
+                }
+            } else {
+                copyAction.metadata.channel = null;
+                copyAction.metadata.channelName = null;
+                actions.push(copyAction);
+            }
+        }
+
+        const data = {
+            name: autoModRule.name,
+            eventType: autoModRule.eventType,
+            triggerType: autoModRule.triggerType,
+            triggerMetadata: autoModRule.triggerMetadata,
+            actions: actions,
+            enabled: autoModRule.enabled,
+            exemptRoles: autoModRule.exemptRoles?.map((exemptRole) => {
+                const filteredFirstRole = roles.filter(role => role.name === exemptRole.name && backupData.roleMap[exemptRole.id] === role).first();
+                if (filteredFirstRole) return filteredFirstRole.id;
+            }),
+            exemptChannels: autoModRule.exemptChannels?.map((exemptChannel) => {
+                const filteredFirstChannel = channels.filter(channel => channel.name === exemptChannel.name && backupData.channelMap[exemptChannel.id] === channel).first();
+                if (filteredFirstChannel) return filteredFirstChannel.id;
+            }),
+        };
+
+        await guild.autoModerationRules.create(data);
+    }
+}
