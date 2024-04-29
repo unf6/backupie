@@ -165,7 +165,7 @@ export async function loadAutoModRules(guild: Guild, backupData: BackupData, cha
         for (const action of autoModRule.actions) {
             let copyAction = JSON.parse(JSON.stringify(action));
             if (action.metadata.channelName) {
-                const filteredFirstChannel = channels.find(channel => channel.name === action.metadata.channelName && backupData.channelMap[action.metadata.channelId] === channel);
+                const filteredFirstChannel = channels.find(channel => channel.name === action.metadata.channelName && channels.some(channel => channel.id === action.metadata.channelId));
                 if (filteredFirstChannel) {
                     copyAction.metadata.channel = filteredFirstChannel.id;
                     copyAction.metadata.channelName = null;
@@ -186,7 +186,7 @@ export async function loadAutoModRules(guild: Guild, backupData: BackupData, cha
             actions: actions,
             enabled: autoModRule.enabled,
             exemptRoles: autoModRule.exemptRoles?.map((exemptRole) => {
-                const filteredFirstRole = roles.find(role => role.name === exemptRole.name && backupData.roleMap[exemptRole.id] === role);
+                const filteredFirstRole = roles.find(role => role.name === exemptRole.name && roles.some(role => role.id === exemptRole.id));
                 if (filteredFirstRole) return filteredFirstRole.id;
             }),
             exemptChannels: autoModRule.exemptChannels?.map((exemptChannel) => {
