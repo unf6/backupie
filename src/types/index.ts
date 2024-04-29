@@ -15,4 +15,3 @@ export * from './TextChannelData';
 export * from './ThreadChannelData';
 export * from './VoiceChannelData';
 export * from './WidgetData';
-export * from './AutomodData';
