@@ -164,7 +164,7 @@ export async function getChannels(guild: Guild, options: CreateOptions) {
 }
 
 /* returns an array with the guilds automoderation rules */
-export async function getAutoModerationRules(guild: any): Promise<AutoModRuleData[]> {
+export async function getAutoModerationRules(guild: Guild): Promise<AutoModRuleData[]> {
 
     const rules: AutoModRuleData[] = [];
     const ruless = await guild.autoModerationRules.fetch({ cache: false });
