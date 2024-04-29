@@ -6,7 +6,11 @@ import type {
     EmojiData,
     RoleData,
     TextChannelData,
-    VoiceChannelData
+    VoiceChannelData,
+    ExemptRoleData,
+    ExemptChannelData,
+    AutoModRuleActionData,
+    AutoModRuleData
 } from './types';
 import type { CategoryChannel, Collection, Guild, GuildChannel, Snowflake, TextChannel, ThreadChannel, VoiceChannel } from 'discord.js';
 import { ChannelType } from 'discord.js';
@@ -160,15 +164,17 @@ export async function getChannels(guild: Guild, options: CreateOptions) {
 }
 
 /* returns an array with the guilds automoderation rules */
-export async function getAutoModerationRules(guild) {
-    const rules = await guild.autoModerationRules.fetch({ cache: false });
-    const collectedRules = [];
+export async function getAutoModerationRules(guild: any): Promise<AutoModRuleData[]> {
+
+    const rules: AutoModRuleData[] = [];
+    const ruless = await guild.autoModerationRules.fetch({ cache: false });
+    const collectedRules: AutoModRuleData[] = [];
 
     rules.forEach((rule) => {
-        const actions = [];
+        const actions: AutoModRuleActionData[] = [];
 
         rule.actions.forEach((action) => {
-            const copyAction = JSON.parse(JSON.stringify(action));
+            const copyAction: AutoModRuleActionData = JSON.parse(JSON.stringify(action));
 
             if (copyAction.metadata.channelId) {
                 const channel = guild.channels.cache.get(copyAction.metadata.channelId);
@@ -184,8 +190,8 @@ export async function getAutoModerationRules(guild) {
         });
 
         /* filter out deleted roles and channels due to a potential bug with discord.js */
-        const exemptRoles = rule.exemptRoles.filter((role) => role != undefined);
-        const exemptChannels = rule.exemptChannels.filter((channel) => channel != undefined);
+        const exemptRoles: ExemptRoleData[] = rule.exemptRoles.filter((role: any) => role != undefined);
+        const exemptChannels: ExemptChannelData[] = rule.exemptChannels.filter((channel: any) => channel != undefined);
 
         collectedRules.push({
             name: rule.name,
@@ -200,5 +206,4 @@ export async function getAutoModerationRules(guild) {
     });
 
     return collectedRules;
-
 }
