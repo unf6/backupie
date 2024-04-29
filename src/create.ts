@@ -6,11 +6,7 @@ import type {
     EmojiData,
     RoleData,
     TextChannelData,
-    VoiceChannelData,
-    ExemptRoleData,
-    ExemptChannelData,
-    AutoModRuleActionData,
-    AutoModRuleData
+    VoiceChannelData
 } from './types';
 import type { CategoryChannel, Collection, Guild, GuildChannel, Snowflake, TextChannel, ThreadChannel, VoiceChannel } from 'discord.js';
 import { ChannelType } from 'discord.js';
@@ -161,49 +157,4 @@ export async function getChannels(guild: Guild, options: CreateOptions) {
         }
         resolve(channels); // Returns the list of the channels
     });
-}
-
-/* returns an array with the guilds automoderation rules */
-export async function getAutoModerationRules(guild: Guild): Promise<AutoModRuleData[]> {
-
-    const rules: AutoModRuleData[] = [];
-    const ruless = await guild.autoModerationRules.fetch({ cache: false });
-    const collectedRules: AutoModRuleData[] = [];
-
-    rules.forEach((rule) => {
-        const actions: AutoModRuleActionData[] = [];
-
-        rule.actions.forEach((action) => {
-            const copyAction: AutoModRuleActionData = JSON.parse(JSON.stringify(action));
-
-            if (copyAction.metadata.channelId) {
-                const channel = guild.channels.cache.get(copyAction.metadata.channelId);
-
-                if (channel) {
-                    copyAction.metadata.channelName = channel.name;
-                    actions.push(copyAction);
-                }
-
-            } else {
-                actions.push(copyAction);
-            }
-        });
-
-        /* filter out deleted roles and channels due to a potential bug with discord.js */
-        const exemptRoles: ExemptRoleData[] = rule.exemptRoles.filter((role: any) => role != undefined);
-        const exemptChannels: ExemptChannelData[] = rule.exemptChannels.filter((channel: any) => channel != undefined);
-
-        collectedRules.push({
-            name: rule.name,
-            eventType: rule.eventType,
-            triggerType: rule.triggerType,
-            triggerMetadata: rule.triggerMetadata,
-            actions: actions,
-            enabled: rule.enabled,
-            exemptRoles: exemptRoles.map((role) => ({ id: role.id, name: role.name })),
-            exemptChannels: exemptChannels.map((channel) => ({ id: channel.id, name: channel.name }))
-        });
-    });
-
-    return collectedRules;
 }
